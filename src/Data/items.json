@@ -1,0 +1,30 @@
+[
+  {
+    "id": 1,
+    "name": "Animal Farm",
+    "description": "George Orwell",
+    "image": "https://m.media-amazon.com/images/I/91LUbAcpACL.jpg",
+    "price": 10.99
+  },
+  {
+    "id": 2,
+    "name": "The Testaments",
+    "description": "Margaret Atwood",
+    "image": "https://m.media-amazon.com/images/I/71vHjmxxkBL._AC_UF1000,1000_QL80_.jpg",
+    "price": 19.99
+  },
+  {
+    "id": 3,
+    "name": "The Alchemist",
+    "description": "Paulo Coelho",
+    "image": "https://m.media-amazon.com/images/I/51FXs5gTmdL._AC_UF1000,1000_QL80_.jpg",
+    "price": 15.99
+  },
+  {
+    "id": 4,
+    "name": "To Kill a Mockingbird",
+    "description": "This is item 4",
+    "image": "https://upload.wikimedia.org/wikipedia/commons/4/4f/To_Kill_a_Mockingbird_%28first_edition_cover%29.jpg",
+    "price": 12.99
+  }
+]

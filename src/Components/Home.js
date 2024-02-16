@@ -1,0 +1,149 @@
+import React, { useEffect, useRef, useState } from "react";
+import Dropdown from "react-dropdown";
+import "react-dropdown/style.css";
+import itemsData from "../Data/items.json";
+import Item from "./item";
+import "bootstrap/dist/css/bootstrap.min.css";
+import { Row } from "react-bootstrap";
+
+function HomeComponent() {
+  // Sorting options for dropdown
+  const options = [
+    "price from lowest to highest",
+    "price from highest to lowest",
+  ];
+  const defaultOption = options[0];
+
+  // State for items and filtering/sorting options
+  const [items, setItems] = useState(itemsData);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [priceRange, setPriceRange] = useState("");
+  const [sortOption, setSortOption] = useState(defaultOption);
+  const [sortedItems, setSortedItems] = useState(itemsData);
+
+  // Reference for range input
+  const range = useRef();
+  let rangedItems;
+
+  // Use useEffect to handle side effects after state updates
+  useEffect(() => {
+    filterAndSortAndRangeItems(searchQuery, sortOption, priceRange);
+  }, [searchQuery, sortOption, priceRange]);
+
+  // Handle input change for search bar
+  const handleSearchInputChange = (e) => {
+    setSearchQuery(e.target.value);
+    console.log(e.target.value.toLowerCase().trim());
+  };
+  function deleteSpacesBetweenWords(inputString) {
+    // Use a regular expression to match spaces between words
+    // The regular expression \s+ matches one or more whitespace characters
+    // The g flag makes the replacement global (i.e., replace all occurrences)
+    return inputString.replace(/\s+/g, "");
+  }
+
+  // Handle sorting option change
+  const handleSort = (e) => {
+    setSortOption(e.value);
+  };
+
+  // Handle range input change
+  const handleRange = () => {
+    setPriceRange(range.current.value);
+  };
+
+  // Function to filter, sort, and range items
+  const filterAndSortAndRangeItems = (searchTerm, sortOption, priceRange) => {
+    let filteredResults = items.filter((item) => {
+      // Convert item name and search term to lowercase
+      const itemNameLower = deleteSpacesBetweenWords(item.name.toLowerCase());
+      console.log(itemNameLower);
+      const searchTermLower = deleteSpacesBetweenWords(
+        searchTerm.toLowerCase()
+      );
+
+      // Check if any part of the item name contains the search term
+      return itemNameLower.includes(searchTermLower);
+    });
+
+    if (priceRange > 0) {
+      rangedItems = filteredResults.filter((i) => i.price <= priceRange);
+    } else {
+      rangedItems = filteredResults;
+    }
+
+    switch (sortOption) {
+      case "price from lowest to highest":
+        rangedItems.sort((a, b) => a.price - b.price);
+        break;
+      case "price from highest to lowest":
+        rangedItems.sort((a, b) => b.price - a.price);
+        break;
+      default:
+        break;
+    }
+
+    setSortedItems(rangedItems);
+  };
+
+  return (
+    <div className="container mt-4">
+      <div className="row">
+        <div className="col-md-6">
+          {/* Search bar */}
+          <label className="form-label" htmlFor="search">
+            Search items:
+          </label>
+          <input
+            id="search"
+            type="text"
+            className="form-control mb-3"
+            value={searchQuery}
+            onChange={handleSearchInputChange}
+            placeholder="Search items..."
+          />
+
+          {/* Range input */}
+          <label className="form-label" htmlFor="price">
+            Price Range:
+          </label>
+          <input
+            id="price"
+            type="range"
+            ref={range}
+            onChange={handleRange}
+            step={1}
+            max={20}
+            className="form-range mb-3"
+          />
+          <div className="d-flex justify-content-between">
+            <span>Min: 0</span>
+            <span>Max: 20</span>
+            <span>Current: {priceRange}</span>
+          </div>
+
+          {/* Sorting dropdown */}
+          <label className="form-label" htmlFor="sorting">
+            Sorting Options:
+          </label>
+          <input id="sorting" className="d-none" />
+          <Dropdown
+            options={options}
+            onChange={handleSort}
+            value={sortOption}
+            placeholder="Select an option"
+          />
+        </div>
+      </div>
+
+      {/* Display items */}
+      <Row className=" mt-4 d-flex " data-testid="items">
+        {sortedItems.map((prod) => (
+          <Item key={prod.id} item={prod} />
+        ))}
+      </Row>
+    </div>
+  );
+}
+
+export default HomeComponent;
